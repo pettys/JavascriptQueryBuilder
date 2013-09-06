@@ -1,0 +1,69 @@
+@primaryBackground: #A30008;
+@primaryColor: #FD7279;
+@secondaryBackground: rgb(93,206,198);
+@secondaryColor: rgb(0,102,94);
+@secondaryBorder: rgb(0, 157, 145);
+
+.size-to-content {
+	display: -moz-inline-stack;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+}
+
+.jqb-box, .jqb-content {
+	font-family: Calibri, Arial;
+	font-size: 10pt;
+
+	h3 {
+		margin: 0;
+		text-align: center;
+		font-size:11pt;
+		color: @primaryColor;
+		background-color: @primaryBackground;
+	}
+}
+
+.jqb-table-selector {
+	float: right;
+	width: 200px;
+}
+
+.jqb-query-workspace {
+	.size-to-content;
+	min-width: 300px;
+	min-height: 200px;
+	border: 1px solid @secondaryBorder;
+	border-radius: 6px;
+	.jqb-body {
+		margin: 6px;
+	}
+}
+
+.jqb-query-table {
+	.size-to-content;
+	float: left;
+	margin: 6px;
+	.column-name {}
+	.column-datatype {
+		color: #999;
+		font-style:italic;
+	}
+}
+
+.jqb-box {
+	border: 1px solid @secondaryBorder;
+	border-radius: 6px;
+	a {
+		text-decoration: none;
+		padding: 1px 0 1px 4px;
+		background-color: @secondaryBackground;
+		color: @secondaryColor;
+		display: block;
+		&:hover {
+			background-color: @secondaryColor;
+			color: @secondaryBackground;
+		}
+	}
+}
+

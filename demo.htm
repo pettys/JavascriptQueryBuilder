@@ -1,0 +1,49 @@
+﻿<html>
+	<head>
+		<title>Javascript Query Builder Demo</title>
+		<link rel="stylesheet" href="jqb.css" />
+	</head>
+	<body>
+
+		<div class="jqb-content jqb-query-workspace">
+			<h3>Query</h3>
+			<div class="jqb-body" data-bind="foreach: queryTables">
+				<div class="jqb-box jqb-query-table">
+					<h3 data-bind="text: name"></h3>
+					<div class="jqb-body" data-bind="foreach: columns">
+						<div>
+							<input type="checkbox" data-bind="checked: view" />
+							<span class="column-name" data-bind="text: name"></span>
+							<span class="column-datatype">(<span data-bind="text: column.datatype"></span>)</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="jqb-box jqb-table-selector" data-bind="with: schema">
+			<h3>Available Tables</h3>
+			<div class="jqb-body" data-bind="foreach: tables">
+				<a href="#" data-bind="text: name, click: $root.addTableToQuery.bind($root, $data)"></a>
+			</div>
+		</div>
+
+		<pre style="clear: both;" data-bind="text:sql"></pre>
+
+	</body>
+
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+	<script type="text/javascript" src="Schema.js"></script>
+	<script type="text/javascript" src="ViewModel.js"></script>
+	<script type="text/javascript">
+		// Generate Schema with this:
+		//    SELECT c.table_name, c.column_name, c.data_type, c.column_key
+		//    FROM information_schema.tables t
+		//    JOIN information_schema.columns c ON t.table_name = c.table_name AND t.table_schema = c.table_schema
+		//    WHERE t.table_schema = 'YOUR_DB_NAME'
+		//    ORDER BY t.table_name, c.ordinal_position;
+		var schemaCsv = "accounts,id,char,PRI\naccounts,fname,varchar,\naccounts,lname,varchar,\naccounts,address,varchar,\naccounts,city,varchar,\naccounts,state,varchar,\naccounts,zip,varchar,\naccounts,mobile_phone,varchar,\naccounts,home_phone,varchar,\naccounts,primary_phone,int,\naccounts,base_measurement,varchar,\naccounts,reminder,date,\naccounts,is_active,tinyint,\nadmin_settings,id,char,PRI\nadmin_settings,sending_email,varchar,\nadmin_settings,phone,varchar,\ncontracts,id,char,PRI\ncontracts,account_id,char,\ncontracts,contract_number,varchar,\ncontracts,acres,decimal,\ncontracts,ordernum,int,\ncontracts,is_locked,tinyint,\ncrops,id,char,PRI\ncrops,field_id,char,\ncrops,field_history_id,char,\ncrops,crop,varchar,\ncrops,added,timestamp,\ncrop_herbicides,id,char,PRI\ncrop_herbicides,crop_id,char,\ncrop_herbicides,field_history_id,char,\ncrop_herbicides,herbicide,varchar,\ncrop_herbicides,application_rate,decimal,\ncrop_herbicides,added,timestamp,\ndisease_problems,id,char,PRI\ndisease_problems,disease,varchar,\ndisease_problems,order,int,\nelements,id,char,PRI\nelements,element,varchar,\nelements,amount,decimal,\nelements,type,varchar,\nelements,field_id,char,\nelements,field_history_id,char,\nelements,status,varchar,\nemail_logs,id,char,PRI\nemail_logs,account_id,char,\nemail_logs,sent_on,date,\nemail_logs,template_name,varchar,\nemail_templates,id,char,PRI\nemail_templates,code,char,\nemail_templates,name,varchar,\nemail_templates,reset_password,int,\nemail_templates,email_text,text,\nemail_templates,subject,varchar,\nfields,id,char,PRI\nfields,account_id,char,\nfields,field_name,varchar,\nfields,contract_number,char,\nfields,acres,decimal,\nfields,state,varchar,\nfields,counties,varchar,\nfields,township,varchar,\nfields,section,varchar,\nfields,range,varchar,\nfields,required,tinyint,\nfield_growing_records,id,char,PRI\nfield_growing_records,field_id,char,\nfield_growing_records,field_history_id,char,\nfield_growing_records,date_of_emergence,date,\nfield_growing_records,stand_count,int,\nfield_growing_records,is_marked_complete,tinyint,\nfield_harvest_records,id,char,PRI\nfield_harvest_records,field_id,char,\nfield_harvest_records,field_history_id,char,\nfield_harvest_records,dessication,int,\nfield_harvest_records,product,varchar,\nfield_harvest_records,application_date,date,\nfield_harvest_records,application_rate,decimal,\nfield_harvest_records,adjuvants_used,varchar,\nfield_harvest_records,swath,int,\nfield_harvest_records,swath_date,date,\nfield_harvest_records,push,int,\nfield_harvest_records,push_date,date,\nfield_harvest_records,combine_date,date,\nfield_harvest_records,harvest_moisture,int,\nfield_harvest_records,yield,int,\nfield_harvest_records,required,tinyint,\nfield_harvest_records,crop_loss,int,\nfield_harvest_records,crop_loss_reason,varchar,\nfield_harvest_records,crop_loss_acres,varchar,\nfield_harvest_records,crop_loss_percent,int,\nfield_histories,id,char,PRI\nfield_histories,year,int,\nfield_histories,account_id,char,\nfield_histories,field_id,char,\nfield_histories,historical,tinyint,\nfield_histories,crop,varchar,\nfield_histories,herbicide,varchar,\nfield_histories,application_rate,varchar,\nfield_histories,herbicide2,varchar,\nfield_histories,application_rate2,varchar,\nfield_histories,required,tinyint,\nfield_histories,archived,tinyint,\nfield_histories,status,varchar,\nfield_planting_records,id,char,PRI\nfield_planting_records,field_id,char,\nfield_planting_records,field_history_id,char,\nfield_planting_records,seed_variety_id,char,\nfield_planting_records,seed_variety_other,varchar,\nfield_planting_records,planting_date,date,\nfield_planting_records,planter_type,varchar,\nfield_planting_records,row_width,int,\nfield_planting_records,seed_amount,decimal,\nfield_planting_records,germ,int,\nfield_planting_records,seed_percentage,int,\nfield_planting_records,planting_speed,int,\nfield_planting_records,required,tinyint,\nfield_planting_records,total_applied,varchar,\nfield_preplanting_records,id,char,PRI\nfield_preplanting_records,field_id,char,\nfield_preplanting_records,field_history_id,char,\nfield_preplanting_records,yield_goal,int,\nfield_preplanting_records,sample_taken,date,\nfield_preplanting_records,soil_ph,decimal,\nfield_preplanting_records,soil_type_one,varchar,\nfield_preplanting_records,soil_type_two,varchar,\nfield_preplanting_records,soil_type_three,varchar,\nfield_preplanting_records,organic_matter,int,\nfield_preplanting_records,fertilizer_applied,date,\nfield_preplanting_records,seed_bed,varchar,\nfield_preplanting_records,required,tinyint,\nfield_preplanting_records,soil_test_type,varchar,\nfield_preplanting_records,split_fertilizer,varchar,\ninsect_problems,id,char,PRI\ninsect_problems,insect,varchar,\ninsect_problems,order,int,\nlogins,id,char,PRI\nlogins,account_id,char,\nlogins,user_id,char,\nlogins,login,timestamp,\nplant_stages,id,char,PRI\nplant_stages,type,varchar,\nplant_stages,order,int,\nquarters,id,char,PRI\nquarters,quarter,int,\nquarters,account_id,char,\nquarters,field_id,char,\nseed_varieties,id,char,PRI\nseed_varieties,title,varchar,\nseed_varieties,herbicide,varchar,\nseed_varieties,first_active_year,int,\nseed_varieties,last_active_year,int,\nseed_varieties,is_contract_variety,tinyint,\nsprays,id,char,PRI\nsprays,field_growing_record_id,char,\nsprays,application_date,date,\nsprays,plant_stage,varchar,\nsprays,adjuvants,varchar,\nsprays,herbicide,varchar,\nsprays,herbicide_mix,varchar,\nsprays,herbicide_ounces_per_acre,decimal,\nsprays,insect_problem_id,char,\nsprays,insecticide,varchar,\nsprays,insecticide_ounces_per_acre,decimal,\nsprays,disease_problem_id,char,\nsprays,fungicide,varchar,\nsprays,fungicide_ounces_per_acre,decimal,\ntissue_tests,id,char,PRI\ntissue_tests,field_growing_record_id,char,\ntissue_tests,sample_date,date,\ntissue_tests,sample_plant_stage,varchar,\ntissue_tests,fertilizer_date,date,\ntissue_tests,fertilizer_plant_stage,char,\nusers,id,char,PRI\nusers,pwd_reset,char,\nusers,account_id,char,\nusers,username,varchar,\nusers,email,varchar,\nusers,password,varchar,\nusers,user_type_id,char,\nusers,logins,int,\nusers,contract_pattern,varchar,";
+		var viewmodel = new JQB.ViewModel({ schemaCsv: schemaCsv });
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
