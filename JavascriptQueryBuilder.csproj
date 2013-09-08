@@ -58,6 +58,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="demo.htm" />
+    <Content Include="ViewModelTest.js">
+      <DependentUpon>ViewModelTest.ts</DependentUpon>
+    </Content>
+    <Content Include="ViewModelTest.min.js">
+      <DependentUpon>ViewModelTest.ts</DependentUpon>
+    </Content>
+    <TypeScriptCompile Include="ViewModelTest.ts" />
     <TypeScriptCompile Include="Schema.ts" />
     <Content Include="jqb.css">
       <DependentUpon>jqb.less</DependentUpon>
@@ -79,6 +86,8 @@
       <DependentUpon>SchemaTest.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\jasmine.js" />
+    <Content Include="Scripts\knockout-2.3.0.debug.js" />
+    <Content Include="Scripts\knockout-2.3.0.js" />
     <Content Include="Scripts\typings\jasmine\jasmine.d.ts" />
     <Content Include="Scripts\typings\knockout\knockout.d.ts" />
     <TypeScriptCompile Include="ViewModel.ts" />

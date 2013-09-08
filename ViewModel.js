@@ -10,6 +10,14 @@ var JQB;
                 return _this.computeSql();
             });
         }
+        ViewModel.prototype.queryTable = function (name) {
+            for (var i = 0, a = this.queryTables(); i < a.length; i++) {
+                if (a[i].name() === name)
+                    return a[i];
+            }
+            return null;
+        };
+
         ViewModel.prototype.addTableToQuery = function (table) {
             var qt = new QueryTable(this, table);
             this.queryTables.push(qt);
@@ -51,7 +59,6 @@ var JQB;
             this.root = root;
             this.table = table;
             this.name = ko.observable('');
-            this.joins = ko.observableArray([]);
             this.name(table.name);
             var cols = [];
             for (var i = 0; i < table.columns.length; i++) {
@@ -85,7 +92,7 @@ var JQB;
                 for (var j = 0; j < fk.primaryColumns.length; j++) {
                     var primaryColumn = primary.column(fk.primaryColumns[j].name);
                     var fkColumn = fkTable.column(fk.fkColumns[j].name);
-                    this.joins.push(new JoinCondition(primary, fkTable, primaryColumn, fkColumn));
+                    fkColumn.joins.push(new JoinCondition(primary, primaryColumn));
                 }
             }
         };
@@ -107,9 +114,12 @@ var JQB;
             }
             var sql = "join `" + this.name() + "` " + this.alias() + " on ";
             var joinClauses = [];
-            for (var i = 0, a = this.joins(); i < a.length; i++) {
-                var j = a[i];
-                joinClauses.push(j.joinTable.alias() + '.`' + j.joinColumn.name() + '` = ' + j.primary.alias() + '.`' + j.primaryColumn.name() + '`');
+            for (var i = 0, cols = this.columns(); i < cols.length; i++) {
+                for (var j = 0, joins = cols[i].joins(); j < joins.length; j++) {
+                    var join = joins[j];
+                    var joinClause = this.alias() + '.`' + cols[i].name() + '` = ' + join.primary.alias() + '.`' + join.primaryColumn.name() + '`';
+                    joinClauses.push(joinClause);
+                }
             }
             if (joinClauses.length === 0) {
                 joinClauses.push('(NEED JOIN DEFINITION)');
@@ -131,6 +141,7 @@ var JQB;
     var QueryColumn = (function () {
         function QueryColumn(column) {
             this.column = column;
+            this.joins = ko.observableArray([]);
             this.name = ko.observable(column.name);
             this.view = ko.observable(!column.isPkOrFk());
         }
@@ -139,11 +150,9 @@ var JQB;
     JQB.QueryColumn = QueryColumn;
 
     var JoinCondition = (function () {
-        function JoinCondition(primary, joinTable, primaryColumn, joinColumn) {
+        function JoinCondition(primary, primaryColumn) {
             this.primary = primary;
-            this.joinTable = joinTable;
             this.primaryColumn = primaryColumn;
-            this.joinColumn = joinColumn;
         }
         return JoinCondition;
     })();

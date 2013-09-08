@@ -19,6 +19,13 @@ module JQB {
 			this.sql = ko.computed(() => this.computeSql());
 		}
 
+		public queryTable(name: string): QueryTable {
+			for (var i = 0, a = this.queryTables(); i < a.length; i++){
+				if (a[i].name() === name) return a[i];
+			}
+			return null;
+		}
+
 		public addTableToQuery(table: JQB.Schema.Table) {
 			var qt = new QueryTable(this, table);
 			this.queryTables.push(qt);
@@ -58,7 +65,6 @@ module JQB {
 
 		public name = ko.observable('');
 		public columns: KnockoutObservableArray<QueryColumn>;
-		private joins: KnockoutObservableArray<JoinCondition> = ko.observableArray([]);
 
 		constructor(private root: ViewModel, private table: JQB.Schema.Table) {
 			this.name(table.name);
@@ -93,7 +99,7 @@ module JQB {
 				for (var j = 0; j < fk.primaryColumns.length; j++) {
 					var primaryColumn = primary.column(fk.primaryColumns[j].name);
 					var fkColumn = fkTable.column(fk.fkColumns[j].name);
-					this.joins.push(new JoinCondition(primary, fkTable, primaryColumn, fkColumn));
+					fkColumn.joins.push(new JoinCondition(primary, primaryColumn));
 				}
 			}
 		}
@@ -114,9 +120,13 @@ module JQB {
 			}
 			var sql = "join `" + this.name() + "` " + this.alias() + " on ";
 			var joinClauses = [];
-			for(var i = 0, a = this.joins(); i < a.length; i++) {
-				var j = a[i];
-				joinClauses.push(j.joinTable.alias() + '.`' + j.joinColumn.name() + '` = ' + j.primary.alias() + '.`' + j.primaryColumn.name() + '`');
+			for (var i = 0, cols = this.columns(); i < cols.length; i++) {
+				for (var j = 0, joins = cols[i].joins(); j < joins.length; j++) {
+					var join = joins[j];
+					var joinClause = this.alias() + '.`' + cols[i].name()
+						+ '` = ' + join.primary.alias() + '.`' + join.primaryColumn.name() + '`';
+					joinClauses.push(joinClause);
+				}
 			}
 			if (joinClauses.length === 0) {
 				joinClauses.push('(NEED JOIN DEFINITION)');
@@ -138,6 +148,7 @@ module JQB {
 
 		public name: KnockoutObservable<string>;
 		public view: KnockoutObservable<boolean>;
+		public joins: KnockoutObservableArray<JoinCondition> = ko.observableArray([]);
 
 		constructor(public column: JQB.Schema.Column) {
 			this.name = ko.observable(column.name);
@@ -148,7 +159,7 @@ module JQB {
 
 	export class JoinCondition {
 
-		constructor(public primary: QueryTable, public joinTable: QueryTable, public primaryColumn: QueryColumn, public joinColumn: QueryColumn) {
+		constructor(public primary: QueryTable, public primaryColumn: QueryColumn) {
 		}
 
 	}
